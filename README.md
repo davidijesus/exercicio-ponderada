@@ -83,3 +83,20 @@ Um exemplo de resposta da API é:
 }
 ```
 
+## Desserialização e Clean Code
+
+A desserialização acontece quando o JSON recebido pela API é transformado em objetos Python. No Handler, o FastAPI usa os modelos Pydantic `CreateFigurinhaBody` e `UpdateFigurinhaBody` para receber o corpo da requisição. Depois, esses dados são convertidos para os DTOs `CreateFigurinhaRequest` e `UpdateFigurinhaRequest`, mantendo Pydantic como detalhe da camada HTTP, e não como parte do domínio.
+
+No caminho contrário, a serialização da resposta acontece pelo método `to_dict` da entidade `Figurinha`, que transforma enums em strings e datas em formato ISO. Também há conversão entre banco e domínio no método `to_domain` do modelo SQLAlchemy, para que a aplicação trabalhe com objetos de domínio em vez de registros do banco.
+
+As práticas de Clean Code aparecem principalmente na separação de responsabilidades. A camada `domain` guarda o vocabulário do sistema, a `repository` cuida da persistência, a `service` concentra regras de negócio e a `handler` traduz HTTP para domínio e domínio para HTTP. O `main.py` fica como raiz de composição, conectando as camadas por injeção de dependência.
+
+Assim, a documentação descrita acima registra as decisões principais da atividade sem se alongar demais: 
+
+- Reaproveitei uma arquitetura anterior, adaptei o domínio para figurinhas, 
+- Usei Python, FastAPI, SQLAlchemy e SQLite, centralizei validações no Service
+- Separei DTOs da entidade
+- Apliquei Clean Code por meio de camadas pequenas e responsabilidades bem definidas
+
+
+
