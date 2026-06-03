@@ -56,3 +56,30 @@ Os erros de domínio também foram nomeados no Service. Criei `FigurinhaNotFound
 
 No Handler, implementei `handler/figurinha_handler.py` com o prefixo `/figurinha`, conforme o enunciado. Essa camada conhece FastAPI, corpo JSON, parâmetros de rota, filtros de query e status HTTP, mas não contém regra de negócio. Ela apenas recebe a requisição, monta os DTOs, chama o Service e transforma o resultado em resposta HTTP.
 
+## Contrato da API
+
+O contrato final ficou alinhado com a atividade: `POST /figurinha` cria uma figurinha, `GET /figurinha` lista todas ou filtra por `tipo` e `posicao`, `GET /figurinha/{id}` busca por id, `PUT /figurinha/{id}` atualiza um registro e `DELETE /figurinha/{id}` remove uma figurinha. Quando um id não existe, a resposta é 404 com a mensagem `figurinha não encontrado`.
+
+Um exemplo de corpo para criação ou atualização é:
+
+```json
+{
+  "numero": "BRA 15",
+  "tipo": "comum",
+  "posicao": "Atacante"
+}
+```
+
+Um exemplo de resposta da API é:
+
+```json
+{
+  "id": 1,
+  "numero": "BRA 15",
+  "tipo": "comum",
+  "posicao": "Atacante",
+  "updated_at": "2026-06-03T13:35:49.081885+00:00",
+  "created_at": "2026-06-03T13:35:49.081885+00:00"
+}
+```
+
