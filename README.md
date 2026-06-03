@@ -46,3 +46,13 @@ Essa decisão deixa os valores válidos explícitos e reduz validações repetid
 
 Também separei a entidade dos DTOs de entrada. A entidade `Figurinha` representa o registro completo, enquanto `CreateFigurinhaRequest` e `UpdateFigurinhaRequest` representam apenas o que o cliente pode enviar: `numero`, `tipo` e `posicao`. Assim, o cliente não controla campos internos como `id`, `created_at` ou `updated_at`.
 
+## Camadas e responsabilidades de cada uma delas
+
+Na camada de Repository, separei o contrato da implementação. O arquivo `repository/figurinha_repository.py` define a interface `FigurinhaRepository`, enquanto `repository/figurinha_repo.py` implementa esse contrato com SQLAlchemy. Essa separação aplica o princípio de inversão de dependência: o Service depende de uma abstração, não diretamente do banco de dados.
+
+Na camada de Service, implementei as regras de negócio em `service/figurinha_service.py`. O Service valida campos obrigatórios, confere se `tipo` e `posicao` pertencem aos enums, valida filtros de listagem e verifica se o `id` existe antes de buscar, atualizar ou deletar. Também é nessa camada que `created_at` e `updated_at` são preenchidos automaticamente.
+
+Os erros de domínio também foram nomeados no Service. Criei `FigurinhaNotFoundError`, `RequiredFieldError`, `InvalidTipoError` e `InvalidPosicaoError` para deixar mais claro o motivo de cada falha e permitir que o Handler converta esses erros para os status HTTP corretos.
+
+No Handler, implementei `handler/figurinha_handler.py` com o prefixo `/figurinha`, conforme o enunciado. Essa camada conhece FastAPI, corpo JSON, parâmetros de rota, filtros de query e status HTTP, mas não contém regra de negócio. Ela apenas recebe a requisição, monta os DTOs, chama o Service e transforma o resultado em resposta HTTP.
+
