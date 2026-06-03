@@ -3,8 +3,10 @@ main.py
 -------
 Raiz de composicao da aplicacao.
 
-Este e o unico arquivo que conhece todas as camadas: abre o banco, cria o
-repositorio, injeta no service e registra as rotas HTTP.
+Este é o unico arquivo que conhece todas as camadas: 
+
+Ele abre o banco, 
+Cria o repositorio, injeta no service e registra as rotas HTTP.
 """
 
 from os import getenv
