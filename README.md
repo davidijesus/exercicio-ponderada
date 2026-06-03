@@ -17,3 +17,32 @@ python main.py
 
 Depois disso, a API fica disponível em `http://localhost:8080` e a documentação interativa do Swagger em `http://localhost:8080/docs`. O FastAPI foi escolhido também por esse motivo, já que facilita a validação manual dos endpoints durante o desenvolvimento.
 
+## Contexto e escolhas iniciais
+
+Como o exercício anterior já utilizava separação entre camadas com responsabilidades distintas, com a permissão do professor, utilizei como base o repositório que tinha desenvolvido para a atividade anterior. Essa base já seguia a estrutura Domain, Repository, Service e Handler, então o principal trabalho foi adaptar o domínio antigo, que era de registro de gastos, para o novo domínio de figurinhas.
+
+Python foi escolhido principalmente por familiaridade com a linguagem e por permitir trabalhar com SQLite local de forma simples. Embora o Python já tenha a biblioteca `sqlite3`, optei por usar SQLAlchemy para organizar melhor a persistência, evitando espalhar SQL manual pelo projeto e mantendo a regra de negócio longe dos detalhes de infraestrutura.
+
+## Organização do domínio
+
+O arquivo `domain/figurinha.py` concentra o vocabulário principal da aplicação. Nele, criei a entidade `Figurinha` com os campos exigidos no enunciado: `id`, `numero`, `tipo`, `posicao`, `updated_at` e `created_at`. O `id` é gerado pelo banco, enquanto `created_at` e `updated_at` são controlados pelo servidor.
+
+Para evitar strings soltas no código, criei os enums `FigurinhaTipo` e `FigurinhaPosicao`. 
+
+Os tipos aceitos são:
+
+- `comum`
+- `brilhante`
+- `legends_ouro`
+- `legends_bronze` 
+
+As posições aceitas são:
+- `Goleiro`
+- `Zagueiro`
+- `Meio-campista`
+- `Atacante`
+
+Essa decisão deixa os valores válidos explícitos e reduz validações repetidas.
+
+Também separei a entidade dos DTOs de entrada. A entidade `Figurinha` representa o registro completo, enquanto `CreateFigurinhaRequest` e `UpdateFigurinhaRequest` representam apenas o que o cliente pode enviar: `numero`, `tipo` e `posicao`. Assim, o cliente não controla campos internos como `id`, `created_at` ou `updated_at`.
+
